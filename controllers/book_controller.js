@@ -2,8 +2,8 @@ const bookModel = require('../models/book_model')
 
 const createBook = async(req,res) => {
     try{
-        const {author_name,img,pdf_url,genre,book_desc,rent_amount,purchase_amount,pages} = req.body;
-        if(!(author_name&&img&&pdf_url&&genre&&book_desc&&rent_amount&&purchase_amount&&pages)){
+        const {book_name,author_name,img,pdf_url,genre,book_desc,rent_amount,purchase_amount,pages,ratings} = req.body;
+        if(!(book_name&&author_name&&img&&pdf_url&&genre&&book_desc&&rent_amount&&purchase_amount&&pages&&ratings)){
             return res.status(400).json({
                 'message': 'All fields are required',
                 res:null
@@ -11,6 +11,7 @@ const createBook = async(req,res) => {
             })
         }
         const book = await bookModel.create({
+            book_name,
             author_name,
             img,
             pdf_url,
@@ -18,7 +19,8 @@ const createBook = async(req,res) => {
             book_desc,
             rent_amount,
             purchase_amount,
-            pages
+            pages,
+            ratings
         });
         book.save();
 
@@ -30,7 +32,20 @@ const createBook = async(req,res) => {
         console.log(error);
     }
 }
+const getBooks = async(req,res) => {
+    try{
+        const books = await bookModel.find({});
+
+        return res.status(200).json({
+            message:"Books retrieved",
+            res:books
+        })
+    }catch(error){
+        console.log(error);
+    }
+}
 
 module.exports = {
-    createBook
+    createBook,
+    getBooks
 }
