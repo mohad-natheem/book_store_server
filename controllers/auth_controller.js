@@ -1,7 +1,7 @@
 const userModel = require('../models/user_model')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
-// const JWT_KEY="fc6afdf716dd426e6b1e5781924b54b4"
+const JWT_KEY="fc6afdf716dd426e6b1e5781924b54b4"
 const createUser = async(req,res) => {
     try{
         const{user_name,phone_number,current_otp,is_admin} = req.body
@@ -25,6 +25,10 @@ const createUser = async(req,res) => {
             current_otp,
             is_admin
         });
+        const token = jwt.sign({
+            user_id: user._id,
+            email
+        },JWT_KEY);
         user.save()
         .then(savedDocument => {
             console.log('Document saved:', savedDocument);

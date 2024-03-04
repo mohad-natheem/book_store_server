@@ -4,7 +4,8 @@ const cors = require('cors')
 
 const authRouter = require('./routers/auth_router')
 const bookRouter = require('./routers/book_router')
-const transactionRouter = require('./routers/transations_router')
+const transactionRouter = require('./routers/transactions_router')
+const adminRouter = require('./routers/admin_router')
 
 
 const connectDB = require('./configs/database_config');
@@ -26,7 +27,9 @@ app.use('/auth',authRouter);
 
 app.use('/books',bookRouter);
 
-app.use('/transactions',transactionRouter)
+app.use('/transactions',transactionRouter);
+
+app.use('/admin',adminRouter);
 
 
 const start = async ()=>{

@@ -8,7 +8,9 @@ const Userschema = new mongoose.Schema({
     user_name : {type:String, required:true},
     phone_number : {type:Number,required:true},
     current_otp : {type:Number},
-    is_admin : {type: Boolean}
+    is_admin : {type: Boolean,required:true,default:false},
+    token: { type: String, required: false },
+
     
 }, {
     timestamps: true,
