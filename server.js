@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
-// const authRouter = require('./routers/auth_router')
+const authRouter = require('./routers/auth_router')
 const bookRouter = require('./routers/book_router')
 
 
@@ -21,7 +21,7 @@ app.use(express.json())
 
 
 // //Routes
-// app.use('/auth',authRouter);
+app.use('/auth',authRouter);
 
 app.use('/books',bookRouter);
 
