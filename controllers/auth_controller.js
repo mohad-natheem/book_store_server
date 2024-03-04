@@ -26,9 +26,10 @@ const createUser = async(req,res) => {
             is_admin
         });
         const token = jwt.sign({
-            user_id: user._id,
-            email
-        },JWT_KEY);
+            id: user._id,
+            phone_number
+        },process.env.JWT_KEY);
+        user.token = token;
         user.save()
         .then(savedDocument => {
             console.log('Document saved:', savedDocument);
@@ -37,21 +38,8 @@ const createUser = async(req,res) => {
             console.error('Error saving document:', error);
           })
         ;
-
         return res.status(200).json({
-            message:"user saved",
-            res:user
-        })
-    }catch(error){
-        console.log(error);
-    }
-}
-const getUser = async(req,res) => {
-    try{
-        const user = await userModel.find({});
-
-        return res.status(200).json({
-            message:"sucess",
+            message:"Account created",
             res:user
         })
     }catch(error){
@@ -77,12 +65,13 @@ const loginUser = async (req, res) => {
         }
     
         if (user) {
-            // const token = jwt.sign({
-            //     user_id: user._id,
-            //     phone_number
-            // }, process.env.JWT_KEY)
-            // user.token = token;
+            const token = jwt.sign({
+                id: user._id,
+                phone_number
+            },process.env.JWT_KEY)
+            user.token = token;
             user.save();
+            req.user_id = user.user_id;
             return res.status(200).json({
                 message: "User logged in",
                 res: {
@@ -102,6 +91,5 @@ const loginUser = async (req, res) => {
 
 module.exports = {
     createUser,
-    getUser,
     loginUser
 }

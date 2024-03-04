@@ -1,11 +1,15 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+require('dotenv').config()
 
 const authRouter = require('./routers/auth_router')
 const bookRouter = require('./routers/book_router')
 const transactionRouter = require('./routers/transactions_router')
 const adminRouter = require('./routers/admin_router')
+
+const {authenticateToken} = require('./middlewares/auth_middleware')
+const {isAdmin} = require('./middlewares/admin_middleware')
 
 
 const connectDB = require('./configs/database_config');
@@ -25,19 +29,19 @@ app.use(express.json())
 // //Routes
 app.use('/auth',authRouter);
 
-app.use('/books',bookRouter);
+app.use('/books',authenticateToken,bookRouter);
 
-app.use('/transactions',transactionRouter);
+app.use('/transactions',authenticateToken,transactionRouter);
 
-app.use('/admin',adminRouter);
+app.use('/admin',authenticateToken,isAdmin,adminRouter);
 
 
 const start = async ()=>{
     try{
         await connectDB(uri)
         console.log('Connect to DB')
-        app.listen(PORT,()=>{
-            console.log(`Server listenin to port ${PORT}`);
+        app.listen(process.env.PORT,()=>{
+            console.log(`Server listening to port ${PORT}`);
         },)
     }catch(err){
         console.log(err)
