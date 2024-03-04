@@ -1,6 +1,11 @@
 const mongoose = require('mongoose')
 
 const bookSchema = new mongoose.Schema({
+    book_id:{type: mongoose.Schema.Types.ObjectId,
+        index: true,
+        required: true,
+        auto: true
+    },
     book_name : {type:String, required:true},
     author_name: { type: String, required: true },
     img: { type: String, default: String },
@@ -12,7 +17,7 @@ const bookSchema = new mongoose.Schema({
     pages: { type: Number, required: true },
     ratings:{type:Number, required : true}
 }, {
-    timestamps: true
+    timestamps: true,
 })
 
 const bookCollection = mongoose.model('book', bookSchema,'books')
