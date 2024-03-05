@@ -118,7 +118,7 @@ const progress = async(req,res)=>{
             current_page
         });
         return res.status(201).json({
-            message :"updated",
+            message :current_page,
             res : progress_update
         })
     } catch (error){
@@ -126,10 +126,25 @@ const progress = async(req,res)=>{
     }
 
 }
+    const getProgress = async()=>{
+        const {user_id,book_id} = req.body;
+        if(!(user_id,book_id))
+        {
+            return res.status(400).json({
+                'message' : 'ALl fields are required',
+                res:null
+            })
+        }
+        const currentPageNumber = await progressModel.find({user_id:user_id,book_id:book_id})
+        return res.status(201).json({
+            message : currentPageNumber.current_page
+        })
+    }
 
 module.exports = {
     createTransaction,
     getTransactions,
     getUserTransactions,
-    progress
+    progress,
+    getProgress
 }
