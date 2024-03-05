@@ -2,6 +2,7 @@ const bookModel = require('../models/book_model')
 
 const createBook = async (req, res) => {
     try {
+        console.log(req)
         const image_url = req.protocol + "://" + req.get('host') + '/public/images/' + req.files.image[0].filename;
         const book_url = req.protocol + "://" + req.get('host') + '/public/books/' + req.files.pdf[0].filename;
 

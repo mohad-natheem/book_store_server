@@ -64,8 +64,8 @@ const createUser = async(req,res) => {
 
         const hashedOTP = await bcrypt.hash(otp,15);
 
-        const otpForUser = await otpModel.findOneAndUpdate({user_id},{
-            user_id:user.user_id,
+        const otpForUser = await otpModel.findOneAndUpdate({email:user.email},{
+            email:user.email,
             otp:hashedOTP,
             created_at:Date.now(),
             expires_at:Date.now() + 3600000
