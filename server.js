@@ -7,6 +7,7 @@ const authRouter = require('./routers/auth_router')
 const bookRouter = require('./routers/book_router')
 const transactionRouter = require('./routers/transactions_router')
 const adminRouter = require('./routers/admin_router')
+const progressRouter = require('./routers/progress_router')
 
 const {authenticateToken} = require('./middlewares/auth_middleware')
 const {isAdmin} = require('./middlewares/admin_middleware')
@@ -31,9 +32,11 @@ app.use('/auth',authRouter);
 
 app.use('/books',authenticateToken,bookRouter);
 
-app.use('/transactions',authenticateToken,transactionRouter);
+app.use('/transactions',transactionRouter);
 
 app.use('/admin',authenticateToken,isAdmin,adminRouter);
+
+app.use('/progress',progressRouter)
 
 
 const start = async ()=>{
