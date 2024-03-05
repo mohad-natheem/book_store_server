@@ -1,16 +1,14 @@
 const userModel = require('../models/user_model')
 const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
-const JWT_KEY="fc6afdf716dd426e6b1e5781924b54b4"
 const createUser = async(req,res) => {
     try{
-        const{user_name,phone_number,current_otp,is_admin} = req.body
-        if(!(user_name,phone_number)){
+        const{user_name,email} = req.body
+        if(!(user_name,email)){
             return res.status(400).json({
                 'message' : 'User fields required'
             })
         }
-        const oldUser = await userModel.findOne({ phone_number });
+        const oldUser = await userModel.findOne({ email });
         if(oldUser){
             return res.status(409).json({
                 message : "User already exists",
@@ -21,13 +19,12 @@ const createUser = async(req,res) => {
 
         const user = await userModel.create({
             user_name,
-            phone_number,
-            current_otp,
-            is_admin
+            email
         });
         const token = jwt.sign({
             id: user._id,
-            phone_number
+            user_name,
+            email
         },process.env.JWT_KEY);
         user.token = token;
         user.save()
@@ -48,15 +45,14 @@ const createUser = async(req,res) => {
 }
 const loginUser = async (req, res) => {
     try {
-        const { user_name, phone_number } = req.body
-        console.log(`${user_name} ${phone_number}`)
-        if (!(user_name && phone_number)) {
+        const { email } = req.body
+        if (!(email)) {
             return res.status(400).json({
                 message: "All fields are required",
                 res: null
             })
         }
-        const user = await userModel.findOne({ phone_number });
+        const user = await userModel.findOne({ email });
         if (user == null) {
             return res.status(409).json({
                 message: "User does not exists",
@@ -88,9 +84,32 @@ const loginUser = async (req, res) => {
         console.log(err);
     }
 }
-const logout = async (req,res) =>{
+const logoutUser = async (req,res) =>{
     try{
-        
+        const {user_id} = req.body
+
+        if(!user_id){
+            return res.status(400).json({
+                message: "All fields are required",
+                res: null
+            })
+        }
+
+        const user = await userModel.findOne({ email });
+
+        if(!user){
+            return res.status(409).json({
+                message: "User does not exists",
+                res: null
+            })
+        }
+
+        user.session_active  = false
+
+        res.status(200).json({
+            message: "User logged out",
+            res: null
+        })
 
     }catch(err){
         console.log(err);
@@ -98,5 +117,6 @@ const logout = async (req,res) =>{
 }
 module.exports = {
     createUser,
-    loginUser
+    loginUser,
+    logoutUser
 }

@@ -8,6 +8,7 @@ const bookRouter = require('./routers/book_router')
 const transactionRouter = require('./routers/transactions_router')
 const adminRouter = require('./routers/admin_router')
 const progressRouter = require('./routers/progress_router')
+const otpRouter = require('./routers/otp_router')
 
 const { authenticateToken } = require('./middlewares/auth_middleware')
 const { isAdmin } = require('./middlewares/admin_middleware')
@@ -36,6 +37,10 @@ if (process.env.ENV == "DEV") {
     app.use('/transactions', transactionRouter);
 
     app.use('/admin', adminRouter);
+    
+    app.use('/otp', otpRouter);
+    
+    app.use('/progress', progressRouter)
 } else if (process.env.ENV == "PROD") {
     app.use('/auth', authRouter);
 
@@ -43,11 +48,13 @@ if (process.env.ENV == "DEV") {
 
     app.use('/transactions', authenticateToken, transactionRouter);
 
-    app.use('/admin', adminRouter);
+    app.use('/admin', authenticateToken, isAdmin, adminRouter);
+
+    app.use('/progress', authenticateToken,progressRouter)
+    
+    app.use('/otp', otpRouter);
+    
 }
-
-app.use('/progress',progressRouter)
-
 
 const start = async () => {
     try {
@@ -61,4 +68,7 @@ const start = async () => {
         process.exit(1)
     }
 }
+
+
+
 start()
