@@ -20,7 +20,7 @@ const sendOTP = async(req,res)=>{
     try {
         const {user_id,email} = req.body
         const otp = `${Math.floor(1000 + Math.random() * 9000)}`
-        if(!user_id){
+        if(!(user_id&&email)){
             return res.status(400).json({
                 message:"All fields are required",
                 res:null
@@ -87,13 +87,13 @@ const verifyOTP = async(req,res)=>{
                 res:null
             })
         }
-        const user =await userModel.findByIdAndUpdate({_id:user_id},{
-            verified:true
+        const user =await userModel.findOneAndUpdate({user_id:user_id},{
+            session_active:true
         })
 
 
         return res.status(200).json({
-            message:"User verified",
+            message:"User Logged in",
             res:{
                 id:user._id,
                 status:user.verified,

@@ -8,8 +8,8 @@ const bookRouter = require('./routers/book_router')
 const transactionRouter = require('./routers/transactions_router')
 const adminRouter = require('./routers/admin_router')
 
-const {authenticateToken} = require('./middlewares/auth_middleware')
-const {isAdmin} = require('./middlewares/admin_middleware')
+const { authenticateToken } = require('./middlewares/auth_middleware')
+const { isAdmin } = require('./middlewares/admin_middleware')
 
 
 const connectDB = require('./configs/database_config');
@@ -22,28 +22,38 @@ const PORT = 8000
 // //Middlewares
 app.use(cors())
 app.use(express.json())
-app.use('/public',express.static('public'))
+app.use('/public', express.static('public'))
 
 
 
 // //Routes
-app.use('/auth',authRouter);
+if (process.env.ENV == "DEV") {
+    app.use('/auth', authRouter);
 
-app.use('/books',authenticateToken,bookRouter);
+    app.use('/books', bookRouter);
 
-app.use('/transactions',authenticateToken,transactionRouter);
+    app.use('/transactions', transactionRouter);
 
-app.use('/admin',adminRouter);
+    app.use('/admin', adminRouter);
+} else if (process.env.ENV == "PROD") {
+    app.use('/auth', authRouter);
+
+    app.use('/books', authenticateToken, bookRouter);
+
+    app.use('/transactions', authenticateToken, transactionRouter);
+
+    app.use('/admin', adminRouter);
+}
 
 
-const start = async ()=>{
-    try{
+const start = async () => {
+    try {
         await connectDB(uri)
         console.log('Connect to DB')
-        app.listen(process.env.PORT,()=>{
+        app.listen(process.env.PORT, () => {
             console.log(`Server listening to port ${PORT}`);
         },)
-    }catch(err){
+    } catch (err) {
         console.log(err)
         process.exit(1)
     }

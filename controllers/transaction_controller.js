@@ -51,7 +51,31 @@ const getTransactions = async(req,res) => {
     }
 }
 
+const getUserTransactions = async (req,res) => {
+    try{
+        const user_id = req.params.id;
+        const rented = await transactionModel.find({
+            user_id:user_id,
+            purchase_type:"rented"
+        });
+        const bought = await transactionModel.find({
+            user_id:user_id,
+            purchase_type:"bought"
+        });
+        return res.status(200).json({
+            message:"User transactions retrieved successfully",
+            res: {
+            rented:rented,
+            bought:bought
+            }
+        })
+    }catch(err){
+        console.log(err);
+    }
+}
+
 module.exports = {
     createTransaction,
-    getTransactions
+    getTransactions,
+    getUserTransactions
 }
