@@ -3,8 +3,8 @@ const progressModel = require('../models/progress_model')
 
 const createTransaction = async(req,res) => {
     try{
-        const {user_id,book_id,purchase_type,due_date} = req.body;
-        if(!(user_id,book_id,purchase_type,due_date)){
+        const {user_id,book_id,purchase_type} = req.body;
+        if(!(user_id,book_id,purchase_type)){
             return res.status(400).json({
                 'message': 'Please provide all fields',
                 res:null
@@ -23,6 +23,12 @@ const createTransaction = async(req,res) => {
                 res:null
             })
         }
+        const currentDate = new Date();
+        let due_date = null
+        if(purchase_type == "rented"){
+            due_date = new Date(Date.now() + (30 * 24 * 60 * 60 * 1000));
+        }
+
         const transaction = await transactionModel.create({
             user_id,
             book_id,
@@ -42,7 +48,7 @@ const createTransaction = async(req,res) => {
 
         return res.status(200).json({
             message:"Book purchased successfully",
-            res:book
+            res:transaction
         })
     }catch(error){
         console.log(error);
@@ -94,8 +100,6 @@ const progress = async(req,res)=>{
             })
         }
         const progress_update = await progressModel.updateOne({user_id:user_id,book_id:book_id},{
-            user_id,
-            book_id,
             current_page
         });
         return res.status(201).json({
