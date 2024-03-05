@@ -22,7 +22,7 @@ const PORT = 8000
 // //Middlewares
 app.use(cors())
 app.use(express.json())
-// app.use('/public',express.static('public'))
+app.use('/public',express.static('public'))
 
 
 
@@ -33,7 +33,7 @@ app.use('/books',authenticateToken,bookRouter);
 
 app.use('/transactions',authenticateToken,transactionRouter);
 
-app.use('/admin',authenticateToken,isAdmin,adminRouter);
+app.use('/admin',adminRouter);
 
 
 const start = async ()=>{

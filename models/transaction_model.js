@@ -7,8 +7,8 @@ const transactionSchema = new mongoose.Schema({
         auto: true},
     user_id: { type: String, required: true },
     book_id: { type: String, default: String },
-    purchase_type: { type: String, required: true },
-    due_date: { type: String, required: true },
+    purchase_type: { type: String, default:null },
+    due_date: { type: String, default: null },
     purchase_date: { type: Date, default: Date.now },
 }, {
     timestamps: true,

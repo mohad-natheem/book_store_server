@@ -2,7 +2,11 @@ const bookModel = require('../models/book_model')
 
 const createBook = async(req,res) => {
     try{
+        const image_url = req.protocol + "://" + req.get('host')+ '/public/images/' + req.files.image[0].filename;
+        const book_url = req.protocol + "://" + req.get('host')+ '/public/books/' + req.files.pdf[0].filename;
+        
         const {book_name,author_name,img,pdf_url,genre,book_desc,rent_amount,purchase_amount,pages,ratings} = req.body;
+        
         if(!(book_name&&author_name&&img&&pdf_url&&genre&&book_desc&&rent_amount&&purchase_amount&&pages&&ratings)){
             return res.status(400).json({
                 'message': 'All fields are required',
@@ -24,8 +28,8 @@ const createBook = async(req,res) => {
         const book = await bookModel.create({
             book_name,
             author_name,
-            img,
-            pdf_url,
+            image:image_url,
+            pdf:book_url,
             genre,
             book_desc,
             rent_amount,
