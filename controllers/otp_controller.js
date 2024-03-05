@@ -1,6 +1,6 @@
 const otpModel = require('../models/otp_model')
 const userModel = require('../models/user_model')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer')
 require('dotenv').config()
 
@@ -18,9 +18,9 @@ let transporter = nodemailer.createTransport({
 
 const sendOTP = async(req,res)=>{
     try {
-        const {user_id,email} = req.body
+        const {email} = req.body
         const otp = `${Math.floor(1000 + Math.random() * 9000)}`
-        if(!(user_id&&email)){
+        if(!(email)){
             return res.status(400).json({
                 message:"All fields are required",
                 res:null
@@ -32,10 +32,11 @@ const sendOTP = async(req,res)=>{
             subject:"Verify your Email | NOVELNOOK",
             html:`<p>Enter <b>${otp}</b> in the app to verify your email address and complete your signup process</p><br/><p>This code <b>expires in 1hr</b></p>`
         }
+        const user = await userModel.findOne({email})
         const hashedOTP = await bcrypt.hash(otp,15);
 
         const otpForUser = await otpModel.findOneAndUpdate({user_id},{
-            user_id,
+            user_id:user.user_id,
             otp:hashedOTP,
             created_at:Date.now(),
             expires_at:Date.now() + 3600000
@@ -57,14 +58,14 @@ const sendOTP = async(req,res)=>{
 
 const verifyOTP = async(req,res)=>{
     try {
-        const {user_id,otp} = req.body
-        if(!(user_id && otp)){
+        const {email,otp} = req.body
+        if(!(email && otp)){
             return res.status(400).json({
                 message:"All fields are required",
                 res:null
             })
         }
-        const userOTP = await otpModel.findOne({user_id});
+        const userOTP = await otpModel.findOne({email});
         if(!userOTP){
             return res.status(400).json({
                 message:"OTP hasn't been generated.Generate OTP",
@@ -87,7 +88,7 @@ const verifyOTP = async(req,res)=>{
                 res:null
             })
         }
-        const user =await userModel.findOneAndUpdate({user_id:user_id},{
+        const user =await userModel.findOneAndUpdate({email},{
             session_active:true
         })
 
@@ -95,7 +96,7 @@ const verifyOTP = async(req,res)=>{
         return res.status(200).json({
             message:"User Logged in",
             res:{
-                id:user._id,
+                id:user.user_id,
                 status:user.verified,
                 token:user.token
             }
