@@ -1,4 +1,5 @@
 const transactionModel = require('../models/transaction_model')
+const progressModel = require('../models/progress_model')
 
 const createTransaction = async(req,res) => {
     try{
@@ -29,6 +30,15 @@ const createTransaction = async(req,res) => {
             due_date
         });
         transaction.save();
+        console.log(user_id);
+        const progress = await progressModel.create(
+            {
+                user_id,
+                book_id
+            }
+        );
+        progress.save();
+       
 
         return res.status(200).json({
             message:"Book purchased successfully",
@@ -73,9 +83,34 @@ const getUserTransactions = async (req,res) => {
         console.log(err);
     }
 }
+const progress = async(req,res)=>{
+    try{
+        const {user_id,book_id,current_page} = req.body;
+        if(!(user_id,book_id))
+        {
+            return res.status(400).json({
+                'message' : 'ALl fields are required',
+                res:null
+            })
+        }
+        const progress_update = await progressModel.updateOne({user_id:user_id,book_id:book_id},{
+            user_id,
+            book_id,
+            current_page
+        });
+        return res.status(201).json({
+            message :"updated",
+            res : progress_update
+        })
+    } catch (error){
+        console.log(error);
+    }
+
+}
 
 module.exports = {
     createTransaction,
     getTransactions,
-    getUserTransactions
+    getUserTransactions,
+    progress
 }
