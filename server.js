@@ -21,8 +21,6 @@ const transactionCollection = require('./models/transaction_model')
 const user = require('./models/user_model')
 const bookCollection = require('./models/book_model')
 
-const uri = 'mongodb+srv://praveen:1234@cluster0.4ygvrqb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'; // Replace 'your_mongodb_uri' with your actual MongoDB URI
-const PORT = 8000
 
 
 
@@ -112,10 +110,10 @@ const sendReminder = async() => {
 }
 const start = async () => {
     try {
-        await connectDB(uri)
+        await connectDB(process.env.MONGODB_URI)
         console.log('Connect to DB')
         app.listen(process.env.PORT, () => {
-            console.log(`Server listening to port ${PORT}`);
+            console.log(`Server listening to port ${process.env.PORT}`);
         },)
         await sendReminder()    
     } catch (err) {
