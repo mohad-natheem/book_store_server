@@ -41,7 +41,7 @@ if (process.env.ENV == "DEV") {
 
     app.use('/transactions', transactionRouter);
 
-    app.use('/admin', adminRouter);
+    app.use('/admin',isAdmin, adminRouter);
 
     app.use('/otp', otpRouter);
 
@@ -112,7 +112,7 @@ const sendReminder = async() => {
 }
 const start = async () => {
     try {
-        await connectDB(uri)
+        await connectDB(process.env.MONGODB_URI)
         console.log('Connect to DB')
         app.listen(process.env.PORT, () => {
             console.log(`Server listening to port ${PORT}`);

@@ -90,8 +90,8 @@ const getBook = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         const id = req.params.id
-        const { book_name, author_name, img, pdf_url, genre, book_desc, rent_amount, purchase_amount, pages, ratings } = req.body;
-        if (!(book_name && author_name && img && pdf_url && genre && book_desc && rent_amount && purchase_amount && pages && ratings)) {
+        const { book_name, author_name, image, pdf, genre, book_desc, rent_amount, purchase_amount, pages, ratings } = req.body;
+        if (!(book_name && author_name && image && pdf && genre && book_desc && rent_amount && purchase_amount && pages && ratings)) {
             return res.status(400).json({
                 'message': 'All fields are required',
                 res: null
@@ -101,8 +101,8 @@ const updateBook = async (req, res) => {
         const book = await bookModel.updateOne({ book_id: id }, {
             book_name,
             author_name,
-            img,
-            pdf_url,
+            image,
+            pdf,
             genre,
             book_desc,
             rent_amount,
