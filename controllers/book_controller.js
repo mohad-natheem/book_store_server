@@ -2,11 +2,13 @@ const bookModel = require('../models/book_model')
 
 const createBook = async (req, res) => {
     try {
-        console.log(req)
+        console.log(req.files);
         const image_url = req.protocol + "://" + req.get('host') + '/public/images/' + req.files.image[0].filename;
         const book_url = req.protocol + "://" + req.get('host') + '/public/books/' + req.files.pdf[0].filename;
 
+        // const book_url = "sample url"
         const { book_name, author_name, genre, book_desc, rent_amount, purchase_amount, pages, ratings } = req.body;
+
         console.log(book_name);
         if (!(book_name && author_name && genre && book_desc && rent_amount && purchase_amount && pages && ratings)) {
             return res.status(400).json({
@@ -111,7 +113,7 @@ const updateBook = async (req, res) => {
             ratings
         });
         return res.status(201).json({
-            message: "User updated",
+            message: "Book updated",
             res: book
         })
     } catch (error) {

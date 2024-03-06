@@ -8,8 +8,7 @@ const createTransaction = async(req,res) => {
         if(!(user_id,book_id,purchase_type)){
             return res.status(400).json({
                 'message': 'Please provide all fields',
-                res:null
-                
+                res:null               
             })
         }
         const oldTransaction = await transactionModel.findOne(
@@ -19,10 +18,19 @@ const createTransaction = async(req,res) => {
             }
         )
         if(oldTransaction){
+            if(oldTransaction.purchase_type == "rented"){
+                await transactionModel.findOneAndUpdate({book_id:oldTransaction.book_id},{
+                    purchase_type : "bought"
+                });
+                return res.status(204).json({
+                    message:"Your purchasae type has been changed from rented to bought",
+                    res:null
+                });
+            }
             return res.status(409).json({
                 message:"You have already purchased this book",
                 res:null
-            })
+            });
         }
         const currentDate = new Date();
         let due_date = null

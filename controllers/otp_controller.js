@@ -98,7 +98,8 @@ const verifyOTP = async(req,res)=>{
             res:{
                 id:user.user_id,
                 status:user.verified,
-                token:user.token
+                token:user.token,
+                is_admin:user.is_admin
             }
         })
     } catch (error) {
