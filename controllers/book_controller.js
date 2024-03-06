@@ -2,11 +2,12 @@ const bookModel = require('../models/book_model')
 
 const createBook = async (req, res) => {
     try {
-        console.log(req)
         const image_url = req.protocol + "://" + req.get('host') + '/public/images/' + req.files.image[0].filename;
         const book_url = req.protocol + "://" + req.get('host') + '/public/books/' + req.files.pdf[0].filename;
 
+        // const book_url = "sample url"
         const { book_name, author_name, genre, book_desc, rent_amount, purchase_amount, pages, ratings } = req.body;
+
         console.log(book_name);
         if (!(book_name && author_name && genre && book_desc && rent_amount && purchase_amount && pages && ratings)) {
             return res.status(400).json({
@@ -90,8 +91,8 @@ const getBook = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         const id = req.params.id
-        const { book_name, author_name, img, pdf_url, genre, book_desc, rent_amount, purchase_amount, pages, ratings } = req.body;
-        if (!(book_name && author_name && img && pdf_url && genre && book_desc && rent_amount && purchase_amount && pages && ratings)) {
+        const { book_name, author_name, image, pdf, genre, book_desc, rent_amount, purchase_amount, pages, ratings } = req.body;
+        if (!(book_name && author_name && image && pdf && genre && book_desc && rent_amount && purchase_amount && pages && ratings)) {
             return res.status(400).json({
                 'message': 'All fields are required',
                 res: null
@@ -101,8 +102,8 @@ const updateBook = async (req, res) => {
         const book = await bookModel.updateOne({ book_id: id }, {
             book_name,
             author_name,
-            img,
-            pdf_url,
+            image,
+            pdf,
             genre,
             book_desc,
             rent_amount,
@@ -111,7 +112,7 @@ const updateBook = async (req, res) => {
             ratings
         });
         return res.status(201).json({
-            message: "User updated",
+            message: "Book updated",
             res: book
         })
     } catch (error) {
