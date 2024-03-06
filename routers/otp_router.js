@@ -3,7 +3,7 @@ const router = express.Router()
 
 const { verifyOTP} = require('../controllers/otp_controller')
 
-router.get('/verify',verifyOTP);
+router.post('/verify',verifyOTP);
 
 
 

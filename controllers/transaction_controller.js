@@ -89,6 +89,7 @@ const getUserTransactions = async (req,res) => {
         console.log(err);
     }
 }
+
 const progress = async(req,res)=>{
     try{
         const {user_id,book_id,current_page} = req.body;
@@ -111,7 +112,7 @@ const progress = async(req,res)=>{
     }
 
 }
-    const getProgress = async()=>{
+    const getProgress = async(req,res)=>{
         const {user_id,book_id} = req.body;
         if(!(user_id,book_id))
         {
@@ -121,8 +122,8 @@ const progress = async(req,res)=>{
             })
         }
         const currentPageNumber = await progressModel.find({user_id:user_id,book_id:book_id})
-        return res.status(201).json({
-            message : currentPageNumber.current_page
+        return res.status(203).json({
+            'message' : currentPageNumber
         })
     }
 
@@ -131,5 +132,5 @@ module.exports = {
     getTransactions,
     getUserTransactions,
     progress,
-    getProgress
+    getProgress,
 }
