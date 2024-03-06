@@ -1,5 +1,6 @@
 const transactionModel = require('../models/transaction_model')
-const progressModel = require('../models/progress_model')
+const progressModel = require('../models/progress_model');
+const bookCollection = require('../models/book_model');
 
 const createTransaction = async(req,res) => {
     try{
@@ -74,15 +75,29 @@ const getUserTransactions = async (req,res) => {
             user_id:user_id,
             purchase_type:"rented"
         });
+        console.log("RENTED TRANSACTIONS");
+        console.log(rented);
+        let rentedBooks = []
+        await Promise.all(rented.map(async element => {
+            console.log(element.book_id)
+            const book1 = await bookCollection.findOne({book_id:element.book_id})
+            rentedBooks.push(book1)
+        }))
+        console.log(rentedBooks)
         const bought = await transactionModel.find({
             user_id:user_id,
             purchase_type:"bought"
         });
+        let purchasedBook = []
+        await Promise.all(bought.map(async element => {
+            const book2 = await bookCollection.findOne({book_id:element.book_id})
+            purchasedBook.push(book2)
+        }));
         return res.status(200).json({
             message:"User transactions retrieved successfully",
             res: {
-            rented:rented,
-            bought:bought
+            rented:rentedBooks,
+            bought:purchasedBook
             }
         })
     }catch(err){
